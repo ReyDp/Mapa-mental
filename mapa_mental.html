@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingeniería de Requisitos - Mapa Mental</title>
+<link rel="stylesheet" href="css/mapa_mental.css">
+</head>
+<body>
+
+<div id="stars"></div>
+
+<button id="download-pdf" type="button">Descargar PDF</button>
+
+<div id="canvas-wrapper">
+  <svg id="svg-layer"></svg>
+</div>
+
+<div id="footer-label">Ingeniería de Requisitos · Mapa Mental</div>
+
+<div id="modal-overlay" aria-hidden="true">
+  <div id="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button id="modal-close" type="button" aria-label="Cerrar">×</button>
+    <h2 id="modal-title"></h2>
+    <p id="modal-definition"></p>
+  </div>
+</div>
+
+<script src="js/mapa_mental.js"></script>
+</body>
+</html>
