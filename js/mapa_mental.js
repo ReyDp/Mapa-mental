@@ -210,6 +210,79 @@ function closeModal() {
   modalOverlay.setAttribute('aria-hidden', 'true');
 }
 
+function getCurrentStyles() {
+  return Array.from(document.styleSheets)
+    .map(styleSheet => {
+      try {
+        return Array.from(styleSheet.cssRules)
+          .map(rule => rule.cssText)
+          .join('\n');
+      } catch (error) {
+        return '';
+      }
+    })
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+function downloadHtml() {
+  const html = document.documentElement.cloneNode(true);
+  const head = html.querySelector('head');
+  const body = html.querySelector('body');
+  const button = html.querySelector('#download-html');
+
+  html.querySelectorAll('link[rel="stylesheet"]').forEach(link => link.remove());
+  html.querySelectorAll('script[src]').forEach(script => script.remove());
+
+  const style = document.createElement('style');
+  style.textContent = getCurrentStyles();
+  head.appendChild(style);
+
+  if (button) button.remove();
+
+  const script = document.createElement('script');
+  script.textContent = `
+const definiciones = ${JSON.stringify(definiciones)};
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitle = document.getElementById('modal-title');
+const modalDefinition = document.getElementById('modal-definition');
+const modalClose = document.getElementById('modal-close');
+
+function openModal(nodeName) {
+  modalTitle.textContent = nodeName;
+  modalDefinition.textContent = definiciones[nodeName] || 'DefiniciÃ³n no disponible para este concepto.';
+  modalOverlay.classList.add('visible');
+  modalOverlay.setAttribute('aria-hidden', 'false');
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('visible');
+  modalOverlay.setAttribute('aria-hidden', 'true');
+}
+
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('click', () => openModal(node.dataset.nodo));
+});
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', event => {
+  if (event.target === modalOverlay) closeModal();
+});
+`;
+  body.appendChild(script);
+
+  const content = `<!DOCTYPE html>\n${html.outerHTML}`;
+  const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = 'mapa_mental.html';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function createStars() {
   for (let i = 0; i < 130; i++) {
     const star = document.createElement('div');
@@ -259,7 +332,7 @@ function renderMindMap() {
   });
 }
 
-document.getElementById('download-pdf').addEventListener('click', () => window.print());
+document.getElementById('download-html').addEventListener('click', downloadHtml);
 modalClose.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', event => {
   if (event.target === modalOverlay) closeModal();

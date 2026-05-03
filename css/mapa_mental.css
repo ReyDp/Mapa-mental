@@ -172,7 +172,7 @@ body {
   pointer-events: none;
 }
 
-#download-pdf {
+#download-html {
   position: fixed;
   top: 18px;
   right: 18px;
@@ -190,7 +190,7 @@ body {
   backdrop-filter: blur(8px);
 }
 
-#download-pdf:hover {
+#download-html:hover {
   background: rgba(20,38,78,0.92);
   border-color: rgba(116,192,252,0.9);
 }
@@ -272,7 +272,7 @@ body {
     -webkit-print-color-adjust: exact;
   }
 
-  #download-pdf,
+  #download-html,
   #footer-label,
   #modal-overlay {
     display: none;
